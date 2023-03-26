@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.sql.Statement;
 
@@ -35,6 +36,7 @@ public class Showspec extends HttpServlet {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con= DriverManager.getConnection(url, usrname, pass);
 		Statement st= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+		HttpSession session=request.getSession();
 		//st.setString(1, "%"+val+"%");
 //		st.setString(2, ser);
 //		st.setString(3, ser);
@@ -44,28 +46,31 @@ public class Showspec extends HttpServlet {
 		out.print("<center>");
 		if(rs.next()) {
 			rs.beforeFirst();
+			session.setAttribute("result", rs);
+			response.sendRedirect("Display.jsp");
 		
-		out.print("<table width=50% border=1>"); 
-		out.print("<caption><h1>Your result</h1></caption>");
-		ResultSetMetaData col= rs.getMetaData();
-		int t= col.getColumnCount();
-		out.print("<tr>"); 
-		for(int i=1; i<=t; ++i)
-		{
-			out.println("<th>"+col.getColumnName(i)+"</th>");
-		}
-		out.print("</tr>");
-		while(rs.next())  
-		{  
-		out.print("<tr><td>"+rs.getString(1)+"</td><td>"+rs.getDate(2)+"</td><td>"+rs.getString(3)+"</td><td>"+rs.getInt(4)+"</td><td>"+rs.getString(5)+"</td></tr>");  
-		}
-		out.print("</table>");
+//		out.print("<table width=50% border=1>"); 
+//		out.print("<caption><h1>Your result</h1></caption>");
+//		ResultSetMetaData col= rs.getMetaData();
+//		int t= col.getColumnCount();
+//		out.print("<tr>"); 
+//		for(int i=1; i<=t; ++i)
+//		{
+//			out.println("<th>"+col.getColumnName(i)+"</th>");
+//		}
+//		out.print("</tr>");
+//		while(rs.next())  
+//		{  
+//		out.print("<tr><td>"+rs.getString(1)+"</td><td>"+rs.getDate(2)+"</td><td>"+rs.getString(3)+"</td><td>"+rs.getInt(4)+"</td><td>"+rs.getString(5)+"</td></tr>");  
+//		}
+//		out.print("</table>");
 		}
 		else
-			out.println("<h1> No  such Events Found!!</h1>");
-		out.print("</center>");
-		out.print("</body>");
-		out.print("</html>"); 
+			response.sendRedirect("Edisplay.jsp");
+//			out.println("<h1> No  such Events Found!!</h1>");
+//		out.print("</center>");
+//		out.print("</body>");
+//		out.print("</html>"); 
 		} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

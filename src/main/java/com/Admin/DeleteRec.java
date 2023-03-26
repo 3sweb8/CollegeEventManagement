@@ -1,6 +1,8 @@
 package com.Admin;
 
 import java.io.IOException;
+
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,21 +23,33 @@ public class DeleteRec extends HttpServlet {
 	String usrname= "root";
 	String pass= "";
 	String sql7= "delete from std_rec where uname= ?;";
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String uname= request.getParameter("uname");
+	Connection con;
+	PreparedStatement st1;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session=request.getSession();
+		String uname= (String)session.getAttribute("username");
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con= DriverManager.getConnection(url, usrname, pass);
-			PreparedStatement st1= con.prepareStatement(sql7);
+			con= DriverManager.getConnection(url, usrname, pass);
+			 st1= con.prepareStatement(sql7);
 			st1.setString(1, uname);
 			st1.executeUpdate();
-			HttpSession session= request.getSession();
-			session.setAttribute("username", uname);
-			response.sendRedirect("AdminOpt.jsp");
+			
+			session.setAttribute("username","" );
+			response.sendRedirect("Main.jsp");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
+		finally {
+			try {
+				con.close();
+				st1.close();
+			}
+			catch(Exception e) {
+				System.out.print(e);
+			}
+		}
 	}
 
 }

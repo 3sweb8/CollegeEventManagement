@@ -3,6 +3,7 @@ package com.events;
 import java.io.IOException;
 
 
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.sql.Statement;
 
@@ -33,35 +35,41 @@ public class Showall extends HttpServlet {
 	try {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con= DriverManager.getConnection(url, usrname, pass);
-		Statement st= con.createStatement();
+		Statement st= con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs= st.executeQuery(sql2);
-		out.print("<html>");
-		out.print("<body bgcolor= yellow");
-		out.print("<center>");
+		HttpSession session=request.getSession();
+//		out.print("<html>");
+//		out.print("<body bgcolor= yellow");
+//		out.print("<center>");
 		if(rs.next()) {
-		out.print("<caption><h1>Upcoming Events</h1></caption>");
-		ResultSetMetaData col= rs.getMetaData();
-		out.print("<table width='50%' border='1'>");  
-		int t= col.getColumnCount();
-		out.print("<tr>"); 
-		
-		for(int i=1; i<=t; ++i)
-		{
-			out.println("<th>"+col.getColumnName(i)+"</th>");
-		}
-		out.print("</tr>");
-		while(rs.next())  
-		{  
-		out.print("<tr><td>"+rs.getString(1)+"</td><td>"+rs.getDate(2)+"</td><td>"+rs.getString(3)+"</td><td>"+rs.getInt(4)+"</td><td>"+rs.getString(5)+"</td></tr>");  
-			//out.print(rs.getString(1)+" "+rs.getDate(2)+" "+rs.getString(3)+" "+rs.getInt(4)+" "+rs.getString(5)+" ");
-		}
-		out.print("</table>");
+			rs.beforeFirst();
+		session.setAttribute("result", rs);
+		response.sendRedirect("Display.jsp");
+			
+//		out.print("<caption><h1>Upcoming Events</h1></caption>");
+//		ResultSetMetaData col= rs.getMetaData();
+//		out.print("<table width='50%' border='1'>");  
+//		int t= col.getColumnCount();
+//		out.print("<tr>"); 
+//		
+//		for(int i=1; i<=t; ++i)
+//		{
+//			out.println("<th>"+col.getColumnName(i)+"</th>");
+//		}
+//		out.print("</tr>");
+//		while(rs.next())  
+//		{  
+//		out.print("<tr><td>"+rs.getString(1)+"</td><td>"+rs.getDate(2)+"</td><td>"+rs.getString(3)+"</td><td>"+rs.getInt(4)+"</td><td>"+rs.getString(5)+"</td></tr>");  
+//			//out.print(rs.getString(1)+" "+rs.getDate(2)+" "+rs.getString(3)+" "+rs.getInt(4)+" "+rs.getString(5)+" ");
+//		}
+//		out.print("</table>");
 		}
 		else
-			out.println("<h1> NO UPCOMMING EVENTS TO SHOW!!</h1>");
-		out.print("</center>");
-		out.print("</body>");
-		out.print("</html>");
+			//out.println("<h1> NO UPCOMMING EVENTS TO SHOW!!</h1>");
+//		out.print("</center>");
+//		out.print("</body>");
+//		out.print("</html>");
+			response.sendRedirect("Edisplay.jsp");
 		
 		} catch (Exception e) {
 		// TODO Auto-generated catch block

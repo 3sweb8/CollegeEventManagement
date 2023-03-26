@@ -1,6 +1,7 @@
 package com.Student;
 
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -44,15 +45,21 @@ public class StudentLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String uname= request.getParameter("uname");
 		String pwd= request.getParameter("pwd");
+		HttpSession session= request.getSession();
 		if(check(uname, pwd))
 		{
-			HttpSession session= request.getSession();
+			
 			session.setAttribute("username", uname);
+			session.setAttribute("message","");
 			response.sendRedirect("ShowEventDetails.jsp");
 		}
 		else
 		{
+		
+			session.setAttribute("message", "User not found.");
+			
 			response.sendRedirect("StuLogin.jsp");
+			
 		}
 	}
 

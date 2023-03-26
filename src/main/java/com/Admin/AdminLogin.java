@@ -1,6 +1,8 @@
 package com.Admin;
 
 import java.io.IOException;
+
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,14 +18,16 @@ public class AdminLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String uname= request.getParameter("uname");
 		String pwd= request.getParameter("pwd");
+		HttpSession session= request.getSession();
 		if(uname.equals("admin")&&pwd.equals("admin"))
 		{
-			HttpSession session= request.getSession();
+			
 			session.setAttribute("username", uname);
 			response.sendRedirect("AdminOpt.jsp");
 		}
 		else
 		{
+			session.setAttribute("message","ADMIN NOT FOUND");
 			response.sendRedirect("AdminLogin.jsp");
 		}
 	}
